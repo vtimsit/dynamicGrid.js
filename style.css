@@ -1,0 +1,30 @@
+body
+{
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.grid
+{
+    width: 940px;
+    height: 500px;
+    /* background: red; */
+    position: relative;
+    margin-top: 100px;
+}
+.layout
+{
+    width: 300px;
+    height: 200px;
+    background-color: blue;
+    position: absolute;
+    transition: all .5s ease;
+    font-family: 'roboto';
+    font-weight: bold;
+    font-size: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-origin: top left;
+}
