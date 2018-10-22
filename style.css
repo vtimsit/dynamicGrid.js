@@ -24,7 +24,7 @@ body
     /* transition: transform .5s ease, opacity .5s ease; */
     font-family: 'roboto';
     font-weight: bold;
-    font-size: 80px;
+    font-size: 8vw;
     display: flex;
     justify-content: center;
     align-items: center;
