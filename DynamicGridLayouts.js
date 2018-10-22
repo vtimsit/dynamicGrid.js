@@ -4,7 +4,6 @@ class DynamicGridLayouts
     {
         this.categories = []
         this.params = _params
-        this.active = false
 
         this.$ =
         {
@@ -41,7 +40,7 @@ class DynamicGridLayouts
             this.$.categories[i].addEventListener('click', () => { this._openCategory(this.$.categories[i].dataset.category) })
         }
 
-        this.$.return.addEventListener('click', () => { this._updateGrids() })
+        this.$.return.addEventListener('click', () => { this._resetLayouts() })
     }
 
     _craftLayouts()
@@ -79,46 +78,18 @@ class DynamicGridLayouts
         this.params.layoutsWidth = (this.params.gridWidth - (this.params.gapX * (this.params.columnsNumber - 1))) / this.params.columnsNumber
         if(this.params.square) this.params.layoutsHeight = this.params.layoutsWidth
         
-        if(window.innerWidth < 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 3 }
-        this._craftLayouts()
+        // if(window.innerWidth < 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 3 }
+        this.bool.categoryOpen ? false : this._craftLayouts()
     }
 
-    // _updateGridsColumn()
-    // {
-    //     let offset =
-    //     {
-    //         x: 0,
-    //         y: 0,
-    //     }
+    _resetLayouts()
+    {
+        this._updateGrids()
+        this._craftLayouts()
 
-    //     const random = []
+        this.bool.categoryOpen = false
+    }
 
-    //     for (var i = 0; i < this.$.layouts.length; i++) 
-    //     {
-    //         random.push(i)
-    //     }
-
-    //     for (var i = random.length - 1; i > 0; i--) {
-    //         const j = Math.floor(Math.random() * (i + 1));
-    //         const temp = random[i];
-    //         random[i] = random[j];
-    //         random[j] = temp;
-    //     }
-
-    //     for(let i = 0; i < random.length; i++)
-    //     {
-    //         this.$.layouts[random[i]].style.left = `${0}px`
-    //         this.$.layouts[random[i]].style.top = `${offset.y}px`
-    //         this.$.layouts[random[i]].style.transform = `scale(3)`
-    //         // this.$.layouts[random[i]].style.width = `${600}px`
-    //         // this.$.layouts[random[i]].style.height = `${400}px`
-
-    //         // this.params.layoutsHeight = 400
-    //         this.params.layoutsHeight = 600
-
-    //         offset.y+= this.params.layoutsHeight + this.params.gapY
-    //     }
-    // }
     _openCategory(_category)
     {
         let toDisplayCategory = []
@@ -138,7 +109,6 @@ class DynamicGridLayouts
 
         this._displayCategory(toDisplayCategory)
         this._undisplayCategory(toUndisplayCategory)
-
     }
 
     _displayCategory(_categoryItems)
@@ -149,6 +119,8 @@ class DynamicGridLayouts
             y: 0,
         }
 
+        this.params.layoutsHeight = this.params.layoutsHeight * 3
+
         setTimeout(() => {
             
             for(let i = 0; i < _categoryItems.length; i++)
@@ -156,8 +128,6 @@ class DynamicGridLayouts
                 _categoryItems[i].style.left = `${offset.x}px`
                 _categoryItems[i].style.top = `${offset.y}px`
                 _categoryItems[i].style.transform = `scale(3)`
-    
-                this.params.layoutsHeight = 600
     
                 offset.y+= this.params.layoutsHeight + this.params.gapY
 
