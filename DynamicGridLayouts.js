@@ -41,6 +41,7 @@ class DynamicGridLayouts
     {
         for(let i = 0; i < this.$.layouts.length; i++)
         {
+            this.$.layouts[i].style.transition = 'none'
             this.$.layouts[i].style.width = `${this.params.layoutsWidth}px`
 
             // Check if layout are squares
@@ -107,7 +108,7 @@ class DynamicGridLayouts
         this.params.layoutsWidth = (this.params.gridWidth - (this.params.gapX * (this.params.columnsNumber - 1))) / this.params.columnsNumber
         if(this.params.square) this.params.layoutsHeight = this.params.layoutsWidth
         
-        if(window.innerWidth < 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 3 }
+        if(window.innerWidth < 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 4 }
         // this.bool.categoryOpen ? false : this._craftGridLayouts()
         this.bool.categoryOpen ? this._craftCategoryLayouts() : this._craftGridLayouts()
     }
@@ -118,9 +119,6 @@ class DynamicGridLayouts
         {   
             // Active transition when category is open
             this.$.layouts[i].style.transition = 'transform .5s ease, opacity .5s ease'
-            setTimeout(() => {
-                this.$.layouts[i].style.transition = 'none'
-            }, 800);
         }
         this._initParams()
         this._craftGridLayouts()
@@ -137,9 +135,6 @@ class DynamicGridLayouts
         {   
             // Active transition when category is open
             this.$.layouts[i].style.transition = 'transform .5s ease, opacity .5s ease'
-            setTimeout(() => {
-                this.$.layouts[i].style.transition = 'none'
-            }, 800);
 
             if(this.$.layouts[i].dataset.category == _category)
             {
@@ -190,11 +185,12 @@ class DynamicGridLayouts
 
 const params = 
 {
-    columnsNumber: 3,
+    columnsNumber: 4,
     layoutsHeight: 800,
     square: true,
     gapX: 20,
     gapY: 20,
+    activeLayout: 60,
 }
 
 new DynamicGridLayouts(params)
