@@ -31,10 +31,16 @@ class DynamicGridLayouts
 
     _initParams()
     {
+        if(window.innerWidth < 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 4 }
+        if(window.innerWidth < 600) { this.params.gapY = 10 } else { this.params.gapY = 20 }
+        if(window.innerWidth < 600) { this.params.gapX = 10 } else { this.params.gapX = 20 }
+
         this.params.gridWidth = this.$.grid.offsetWidth
         this.params.layoutsWidth = (this.params.gridWidth - (this.params.gapX * (this.params.columnsNumber - 1))) / this.params.columnsNumber
+        this.params.scaleRatio = 1
 
         if(this.params.square) this.params.layoutsHeight = this.params.layoutsWidth
+        
     }
 
     _initLayouts()
@@ -81,10 +87,10 @@ class DynamicGridLayouts
 
         for(let i = 0; i < this.categories.toDisplay.length; i++)
         {
-            this.categories.toDisplay[i].style.transform = `translateY(${offset.y}px) scale(3)`
+            this.categories.toDisplay[i].style.transform = `translateY(${offset.y}px) scale(${this.params.scaleRatio})`
 
             // Calc offset X & Y
-            offset.y+= (this.params.layoutsHeight * 3) + this.params.gapY
+            offset.y+= (this.params.layoutsHeight * this.params.scaleRatio) + this.params.gapY
         }
     }
         
@@ -108,8 +114,14 @@ class DynamicGridLayouts
         this.params.layoutsWidth = (this.params.gridWidth - (this.params.gapX * (this.params.columnsNumber - 1))) / this.params.columnsNumber
         if(this.params.square) this.params.layoutsHeight = this.params.layoutsWidth
         
-        if(window.innerWidth < 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 4 }
-        // this.bool.categoryOpen ? false : this._craftGridLayouts()
+        // Calc width in % of one layout relative of grid
+        const layoutWidthPercentage = this.params.layoutsWidth / this.params.gridWidth * 100
+        this.params.scaleRatio = this.params.activeLayoutWidth / layoutWidthPercentage
+        
+        if(window.innerWidth <= 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 4 }
+        if(window.innerWidth < 600) { this.params.gapX = 10 } else { this.params.gapX = 20 }
+        if(window.innerWidth < 600) { this.params.gapY = 10 } else { this.params.gapY = 20 }
+
         this.bool.categoryOpen ? this._craftCategoryLayouts() : this._craftGridLayouts()
     }
 
@@ -135,6 +147,7 @@ class DynamicGridLayouts
         {   
             // Active transition when category is open
             this.$.layouts[i].style.transition = 'transform .5s ease, opacity .5s ease'
+            this.$.layouts[i].style.zIndex = '0'
 
             if(this.$.layouts[i].dataset.category == _category)
             {
@@ -158,13 +171,21 @@ class DynamicGridLayouts
             y: 0,
         }
 
-        this.params.layoutsHeight = this.params.layoutsHeight * 3
+        // Calc width in % of one layout relative of grid
+        const layoutWidthPercentage = this.params.layoutsWidth / this.params.gridWidth * 100
+
+        this.params.scaleRatio = this.params.activeLayoutWidth / layoutWidthPercentage
+
+        console.log(this.params.scaleRatio)
+
+        this.params.layoutsHeight = this.params.layoutsHeight * this.params.scaleRatio
 
         setTimeout(() => {
             
             for(let i = 0; i < this.categories.toDisplay.length; i++)
             {
-                this.categories.toDisplay[i].style.transform = `translateX(${offset.x}px) translateY(${offset.y}px) scale(3)`
+                this.categories.toDisplay[i].style.zIndex = `10`
+                this.categories.toDisplay[i].style.transform = `translateX(${offset.x}px) translateY(${offset.y}px) scale(${this.params.scaleRatio})`
     
                 offset.y+= this.params.layoutsHeight + this.params.gapY
 
@@ -186,11 +207,11 @@ class DynamicGridLayouts
 const params = 
 {
     columnsNumber: 4,
-    layoutsHeight: 800,
+    layoutsHeight: 200,
     square: true,
     gapX: 20,
-    gapY: 20,
-    activeLayout: 60,
+    gapY: 60,
+    activeLayoutWidth: 50,
 }
 
 new DynamicGridLayouts(params)
