@@ -19,7 +19,8 @@ class DynamicGridLayouts
         }
 
         this._initParams()
-        this._craftLayouts()
+        this._initLayouts()
+        this._craftGridLayouts()
         this._listeners()
     }
 
@@ -31,9 +32,20 @@ class DynamicGridLayouts
         if(this.params.square) this.params.layoutsHeight = this.params.layoutsWidth
     }
 
+    _initLayouts()
+    {
+        for(let i = 0; i < this.$.layouts.length; i++)
+        {
+            this.$.layouts[i].style.width = `${this.params.layoutsWidth}px`
+
+            // Check if layout are squares
+            this.params.square ? this.$.layouts[i].style.height = `${this.params.layoutsWidth}px` : this.$.layouts[i].style.height = `${this.params.layoutsHeight}px`
+        }
+    }
+
     _listeners()
     {
-        window.addEventListener('resize', () => { this._updateGrids() })
+        window.addEventListener('resize', () => { this._updateParams(); this._initLayouts() })
 
         for(let i = 0; i < this.$.categories.length; i++)
         {
@@ -43,49 +55,65 @@ class DynamicGridLayouts
         this.$.return.addEventListener('click', () => { this._resetLayouts() })
     }
 
-    _craftLayouts()
+    _craftGridLayouts()
     {
-        let offset =
-        {
-            x: 0,
-            y: 0,
-        }
+        let offset = { x: 0, y: 0 }
 
         for(let i = 0; i < this.$.layouts.length; i++)
         {
             this.$.layouts[i].style.opacity = `1`
-            this.$.layouts[i].style.left = `${offset.x}px`
-            this.$.layouts[i].style.top = `${offset.y}px`
-            this.$.layouts[i].style.transform = `scale(1)`
-            this.$.layouts[i].style.width = `${this.params.layoutsWidth}px`
-
-            // Check if layout are squares
-            this.params.square ? this.$.layouts[i].style.height = `${this.params.layoutsWidth}px` : this.$.layouts[i].style.height = `${this.params.layoutsHeight}px`
-
-            offset.x+= this.params.layoutsWidth + this.params.gapX
-
-            if(offset.x >= this.params.gridWidth - this.params.gapX)
-            {
-                offset.x = 0
-                offset.y+= this.params.layoutsHeight + this.params.gapY
-            }
+            this.$.layouts[i].style.transform = `translateX(${offset.x}px) translateY(${offset.y}px) scale(1)`
+            // Calc offset X & Y
+            this._setOffset(offset)
         }
     }
 
-    _updateGrids()
+    _craftCategoryLayouts()
+    {
+        let offset = { x: 0, y: 0 }
+
+        for(let i = 0; i < this.$.layouts.length; i++)
+        {
+            // Calc offset X & Y
+            this._setOffset(offset, 3)
+
+            this.$.layouts[i].style.transform = `translateY(${offset.y}px) scale(3)`
+        }
+    }
+        
+
+    _setOffset(_offset, _scaleRatio = 1)
+    {
+        _offset.x+= this.params.layoutsWidth + this.params.gapX
+
+        if(_offset.x >= this.params.gridWidth - this.params.gapX)
+        {
+            _offset.x = 0
+            _offset.y+= (this.params.layoutsHeight * _scaleRatio) + this.params.gapY
+        }
+    }
+
+    _updateParams()
     {   
+        // Disable transition when resize event
+        for(let i = 0; i < this.$.layouts.length; i++)
+        {
+            this.$.layouts[i].style.transition = 'none'
+        }
+
         this.params.gridWidth = this.$.grid.offsetWidth
         this.params.layoutsWidth = (this.params.gridWidth - (this.params.gapX * (this.params.columnsNumber - 1))) / this.params.columnsNumber
         if(this.params.square) this.params.layoutsHeight = this.params.layoutsWidth
         
         // if(window.innerWidth < 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 3 }
-        this.bool.categoryOpen ? false : this._craftLayouts()
+        // this.bool.categoryOpen ? false : this._craftGridLayouts()
+        this.bool.categoryOpen ? this._craftCategoryLayouts() : this._craftGridLayouts()
     }
 
     _resetLayouts()
     {
-        this._updateGrids()
-        this._craftLayouts()
+        this._initParams()
+        this._craftGridLayouts()
 
         this.bool.categoryOpen = false
     }
@@ -97,6 +125,9 @@ class DynamicGridLayouts
 
         for(let i = 0; i < this.$.layouts.length; i++)
         {
+            // Active transition when category is open
+            this.$.layouts[i].style.transition = 'transform .5s ease, opacity .5s ease'
+            
             if(this.$.layouts[i].dataset.category == _category)
             {
                 toDisplayCategory.push(this.$.layouts[i])
@@ -125,9 +156,7 @@ class DynamicGridLayouts
             
             for(let i = 0; i < _categoryItems.length; i++)
             {
-                _categoryItems[i].style.left = `${offset.x}px`
-                _categoryItems[i].style.top = `${offset.y}px`
-                _categoryItems[i].style.transform = `scale(3)`
+                _categoryItems[i].style.transform = `translateX(${offset.x}px) translateY(${offset.y}px) scale(3)`
     
                 offset.y+= this.params.layoutsHeight + this.params.gapY
 
