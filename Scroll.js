@@ -29,24 +29,24 @@ class Scroll
         {
             this.ratio = 1 / (window.scrollY)
 
-            // if(this.ratio == Infinity) this.ratio = 1
+            if(this.ratio == Infinity) this.ratio = 1
             
-            // for(let i = 0; i < this.$.categories.length; i++)
-            // {
-            //     this.$.categories[i].style.opacity = `${this.ratio}`
-            // }
+            for(let i = 0; i < this.$.categories.length; i++)
+            {
+                this.$.categories[i].style.opacity = `${this.ratio}`
+            }
 
-            // this.$.return.style.transform = `translateX(${-window.scrollY * 2}px)`
-            // this.$.grid.style.transform = `translateY(${window.scrollY}px)`
+            this.$.return.style.transform = `translateX(${-window.scrollY * 2}px)`
+            this.$.grid.style.transform = `translateY(${window.scrollY}px)`
         }
         else if( window.scrollY >= 60)
         {
-            // for(let i = 0; i < this.$.categories.length; i++)
-            // {
-            //     this.$.categories[i].style.opacity = `0`
-            // }
+            for(let i = 0; i < this.$.categories.length; i++)
+            {
+                this.$.categories[i].style.opacity = `0`
+            }
         }
-        // this.$.navigation.style.transform = `translateY(${window.scrollY}px)`
+        this.$.navigation.style.transform = `translateY(${window.scrollY}px)`
 
 
         // console.log(window.scrollY)

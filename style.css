@@ -4,10 +4,24 @@ body
     font-family: 'roboto'
 }
 
+.cursor
+{
+    width: 10px;
+    height: 10px;
+
+    background-color: blue;
+    border-radius: 100%;
+    position: fixed;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 100;
+    /* transition: transform .1s ease; */
+}
+
 .navigation
 {
     display: flex;
-    width: 60vw;
+    width: 70vw;
     margin: 0 auto;
 }
 
@@ -32,12 +46,13 @@ body
 
 .grid
 {
-    width: 60vw;
+    width: 70vw;
     height: 500px;
     /* background: red; */
     position: relative;
     margin: 0 auto;
     /* transition: transform 1s ease */
+    perspective: 800px;
 }
 
 @media (max-width: 900px)
@@ -50,7 +65,7 @@ body
 {
     /* width: 300px; */
     /* height: 200px; */
-    background-color: blue;
+    /* background-color: blue; */
     position: absolute;
     /* transition: transform .5s ease, opacity .5s ease; */
     font-family: 'roboto';
@@ -60,8 +75,48 @@ body
     justify-content: center;
     align-items: center;
     transform-origin: top left;
+    perspective: 800px;
+}
+
+.layout__project
+{
+    height: 100%;
+    width: 100%;
     border-radius: 6px;
+
+    transition: transform .1s ease;
     overflow: hidden;
+    z-index: 2;
+    position: relative;
+    cursor: pointer;
+}
+
+.layout__bright
+{
+    width: 220%;
+    height: 220%;
+
+    background: linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0) 80%);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    z-index: 1;
+    transition: transform 0s linear, opacity .3s ease;
+}
+
+.layout__shadow
+{
+    width: 90%;
+    height: 90%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0px 20px 30px rgba(0, 0, 0, .2);
+    opacity: 0;
+    transition: opacity .1s ease
 }
 
 .layout img

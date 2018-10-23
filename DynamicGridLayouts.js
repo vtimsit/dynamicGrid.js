@@ -23,6 +23,14 @@ class DynamicGridLayouts
             toUndisplay: [],
         }
 
+        this.gap = 
+        {
+            x: this.params.gapX,
+            y: this.params.gapY,
+        }
+
+        this.layoutsParams = []
+
         this._initParams()
         this._initLayouts()
         this._craftGridLayouts()
@@ -32,14 +40,22 @@ class DynamicGridLayouts
     _initParams()
     {
         if(window.innerWidth < 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 3 }
-        if(window.innerWidth < 600) { this.params.gapY = 10 } else { this.params.gapY = 20 }
-        if(window.innerWidth < 600) { this.params.gapX = 10 } else { this.params.gapX = 20 }
+        if(window.innerWidth < 600) { this.params.gapY = 10 } else { this.params.gapY = this.gap.y }
+        if(window.innerWidth < 600) { this.params.gapX = 10 } else { this.params.gapX = this.gap.x }
 
         this.params.gridWidth = this.$.grid.offsetWidth
         this.params.layoutsWidth = (this.params.gridWidth - (this.params.gapX * (this.params.columnsNumber - 1))) / this.params.columnsNumber
         this.params.scaleRatio = 1
 
-        if(this.params.square) this.params.layoutsHeight = this.params.layoutsWidth
+        if(this.params.square) 
+        {
+            this.params.layoutsHeight = this.params.layoutsWidth
+        }
+        else
+        {
+            this.params.layoutsHeight = this.params.layoutsWidth * (1 / this.params.layoutsHeightRatio)
+        }
+        console.log(this.params.layoutsHeight)
         
     }
 
@@ -70,11 +86,19 @@ class DynamicGridLayouts
     _craftGridLayouts()
     {
         let offset = { x: 0, y: 0 }
+        this.layoutsParams = []
 
         for(let i = 0; i < this.$.layouts.length; i++)
         {
             this.$.layouts[i].style.opacity = `1`
             this.$.layouts[i].style.transform = `translateX(${offset.x}px) translateY(${offset.y}px) scale(1)`
+            this.layoutsParams.push(
+                { 
+                    x: offset.x + this.$.grid.offsetLeft, 
+                    y: offset.y + this.$.grid.offsetTop,
+                    width: this.params.layoutsWidth,
+                    height: this.params.layoutsHeight,
+                })
 
             // Calc offset X & Y
             offset = this._setOffset(offset)
@@ -112,15 +136,22 @@ class DynamicGridLayouts
     {   
         this.params.gridWidth = this.$.grid.offsetWidth
         this.params.layoutsWidth = (this.params.gridWidth - (this.params.gapX * (this.params.columnsNumber - 1))) / this.params.columnsNumber
-        if(this.params.square) this.params.layoutsHeight = this.params.layoutsWidth
+        if(this.params.square) 
+        {
+            this.params.layoutsHeight = this.params.layoutsWidth
+        }
+        else
+        {
+            this.params.layoutsHeight = this.params.layoutsWidth * (1 / this.params.layoutsHeightRatio)
+        }
         
         // Calc width in % of one layout relative of grid
         const layoutWidthPercentage = this.params.layoutsWidth / this.params.gridWidth * 100
         this.params.scaleRatio = this.params.activeLayoutWidth / layoutWidthPercentage
         
         if(window.innerWidth <= 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 3 }
-        if(window.innerWidth < 600) { this.params.gapX = 10 } else { this.params.gapX = 20 }
-        if(window.innerWidth < 600) { this.params.gapY = 10 } else { this.params.gapY = 20 }
+        if(window.innerWidth < 600) { this.params.gapX = 10 } else { this.params.gapX = this.gap.x }
+        if(window.innerWidth < 600) { this.params.gapY = 10 } else { this.params.gapY = this.gap.y }
 
         this.bool.categoryOpen ? this._craftCategoryLayouts() : this._craftGridLayouts()
     }
@@ -202,16 +233,10 @@ class DynamicGridLayouts
         }
     }
 
+    getParams()
+    {
+        return this.layoutsParams
+    }
+
 }
 
-const params = 
-{
-    columnsNumber: 4,
-    layoutsHeight: 200,
-    square: false,
-    gapX: 20,
-    gapY: 60,
-    activeLayoutWidth: 50,
-}
-
-new DynamicGridLayouts(params)
