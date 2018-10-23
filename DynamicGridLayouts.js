@@ -31,7 +31,7 @@ class DynamicGridLayouts
 
     _initParams()
     {
-        if(window.innerWidth < 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 4 }
+        if(window.innerWidth < 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 3 }
         if(window.innerWidth < 600) { this.params.gapY = 10 } else { this.params.gapY = 20 }
         if(window.innerWidth < 600) { this.params.gapX = 10 } else { this.params.gapX = 20 }
 
@@ -118,7 +118,7 @@ class DynamicGridLayouts
         const layoutWidthPercentage = this.params.layoutsWidth / this.params.gridWidth * 100
         this.params.scaleRatio = this.params.activeLayoutWidth / layoutWidthPercentage
         
-        if(window.innerWidth <= 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 4 }
+        if(window.innerWidth <= 800) { this.params.columnsNumber = 2 } else { this.params.columnsNumber = 3 }
         if(window.innerWidth < 600) { this.params.gapX = 10 } else { this.params.gapX = 20 }
         if(window.innerWidth < 600) { this.params.gapY = 10 } else { this.params.gapY = 20 }
 
@@ -130,7 +130,7 @@ class DynamicGridLayouts
         for(let i = 0; i < this.$.layouts.length; i++)
         {   
             // Active transition when category is open
-            this.$.layouts[i].style.transition = 'transform .5s ease, opacity .5s ease'
+            this.$.layouts[i].style.transition = 'transform .5s ease, opacity .3s ease'
         }
         this._initParams()
         this._craftGridLayouts()
@@ -146,7 +146,7 @@ class DynamicGridLayouts
         for(let i = 0; i < this.$.layouts.length; i++)
         {   
             // Active transition when category is open
-            this.$.layouts[i].style.transition = 'transform .5s ease, opacity .5s ease'
+            this.$.layouts[i].style.transition = 'transform .5s ease, opacity .3s ease'
             this.$.layouts[i].style.zIndex = '0'
 
             if(this.$.layouts[i].dataset.category == _category)
@@ -180,7 +180,7 @@ class DynamicGridLayouts
 
         this.params.layoutsHeight = this.params.layoutsHeight * this.params.scaleRatio
 
-        setTimeout(() => {
+        // setTimeout(() => {
             
             for(let i = 0; i < this.categories.toDisplay.length; i++)
             {
@@ -191,7 +191,7 @@ class DynamicGridLayouts
 
                 this.bool.categoryOpen = true
             }
-        }, 300);
+        // }, 300);
     }
 
     _undisplayCategory()
@@ -208,7 +208,7 @@ const params =
 {
     columnsNumber: 4,
     layoutsHeight: 200,
-    square: true,
+    square: false,
     gapX: 20,
     gapY: 60,
     activeLayoutWidth: 50,

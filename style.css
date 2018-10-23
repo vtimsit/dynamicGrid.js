@@ -14,17 +14,20 @@ body
 .categories
 {
     display: flex;
+    cursor: pointer;
 }
 
 .categories li
 {
     margin: 20px;
     list-style: none;
+    transition: transform .1s ease;
 }
 
 .return 
 {
     margin: 20px;
+    cursor: pointer;
 }
 
 .grid
@@ -34,6 +37,7 @@ body
     /* background: red; */
     position: relative;
     margin: 0 auto;
+    /* transition: transform 1s ease */
 }
 
 @media (max-width: 900px)
