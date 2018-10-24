@@ -35,6 +35,7 @@ class DynamicGridLayouts
         this._initLayouts()
         this._craftGridLayouts()
         this._listeners()
+        
     }
 
     _initParams()
@@ -55,8 +56,6 @@ class DynamicGridLayouts
         {
             this.params.layoutsHeight = this.params.layoutsWidth * (1 / this.params.layoutsHeightRatio)
         }
-        console.log(this.params.layoutsHeight)
-        
     }
 
     _initLayouts()
@@ -74,6 +73,7 @@ class DynamicGridLayouts
     _listeners()
     {
         window.addEventListener('resize', () => { this._updateParams(); this._initLayouts() })
+        window.addEventListener('click', () => { this._stackLayouts() })
 
         for(let i = 0; i < this.$.categories.length; i++)
         {
@@ -85,6 +85,8 @@ class DynamicGridLayouts
 
     _craftGridLayouts()
     {
+        console.log('craftGRID')
+
         let offset = { x: 0, y: 0 }
         this.layoutsParams = []
 
@@ -103,6 +105,7 @@ class DynamicGridLayouts
             // Calc offset X & Y
             offset = this._setOffset(offset)
         }
+        this.$.grid.style.height = `${offset.y - this.params.gapY}px`
     }
 
     _craftCategoryLayouts()
@@ -207,8 +210,6 @@ class DynamicGridLayouts
 
         this.params.scaleRatio = this.params.activeLayoutWidth / layoutWidthPercentage
 
-        console.log(this.params.scaleRatio)
-
         this.params.layoutsHeight = this.params.layoutsHeight * this.params.scaleRatio
 
         // setTimeout(() => {
@@ -233,10 +234,26 @@ class DynamicGridLayouts
         }
     }
 
+    _stackLayouts()
+    {
+        let rotate = 0
+        for(let i = 0; i < 9; i++)
+        {
+            rotate = Math.random() * (5 - (-5)) + (-5)
+
+            this.$.layouts[i].style.transformOrigin = `center`
+            this.$.layouts[i].style.transition = `transform .5s ease`
+            this.$.layouts[i].style.transform = `translate(0px, 0px) rotate(${rotate}deg)`
+        }
+        for(let i = 9; i < this.$.layouts.length; i++)
+        {
+            this.$.layouts[i].style.opacity = '0'
+        }
+    }
+
     getParams()
     {
         return this.layoutsParams
     }
-
 }
 

@@ -10,17 +10,23 @@ class Scroll
             test: document.querySelector('.return'),
             categories: document.querySelectorAll('.categories__category'),
             img: document.querySelectorAll('.layout img'),
+            layouts: document.querySelectorAll('.layout'),
         }
 
         this.ratio = 0
+
+        this.currentScroll
 
         this._listeners()
     }
 
     _listeners()
     {
-        window.addEventListener('scroll', (event) => { this._setScroll(event) })
-
+        // window.addEventListener('scroll', (event) => 
+        // { 
+        //     this._setScroll(event) 
+        // })
+        // this.elasticScrollValue(event)
     }
 
     _setScroll(_event)
@@ -51,6 +57,29 @@ class Scroll
 
         // console.log(window.scrollY)
         // console.log(this.$.navigation)
+    }
+
+    elasticScrollValue(_event)
+    {
+        this.deltaY = window.scrollY
+
+        const newPixel = this.deltaY
+
+        const diff = newPixel - this.currentScroll
+
+        const speed = diff * 0.1
+
+        // console.log(speed)
+        for(let i = 0; i < this.$.layouts.length; i++)
+        {
+            if(speed < 15 && speed > -15) this.$.img[i].style.transform = `skewY(${speed}deg)`
+        }
+
+        // if(speed < 15 && speed > -15) this.$.grid.style.transform = `skewY(${speed}deg)`
+
+        this.currentScroll = newPixel
+
+        window.requestAnimationFrame(() => { this.elasticScrollValue() })
     }
 }
 
