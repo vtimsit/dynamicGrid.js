@@ -2,7 +2,8 @@ body
 {
     margin: 0 auto;
     font-family: 'roboto';
-    background-color: #262E39;
+    /* background-color: #262E39; */
+    background-color: #ffffff;
 }
 
 .cursor
@@ -28,7 +29,8 @@ body
     width: 70vw;
     margin: 0 auto;
     font-size: 16px;
-    color: white;
+    /* color: white; */
+    color: black;
 }
 
 .categories
@@ -100,8 +102,8 @@ body
     position: relative;
     cursor: pointer;
     transform-origin: bottom;
-    /* background-color: rgb(243, 243, 243); */
-    background-color: #1E2126;
+    background-color: rgb(243, 243, 243);
+    /* background-color: #1E2126; */
 }
 
 .layout h3

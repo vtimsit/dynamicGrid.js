@@ -73,7 +73,7 @@ class DynamicGridLayouts
     _listeners()
     {
         window.addEventListener('resize', () => { this._updateParams(); this._initLayouts() })
-        window.addEventListener('click', () => { this._stackLayouts() })
+        // window.addEventListener('click', () => { this._stackLayouts() })
 
         for(let i = 0; i < this.$.categories.length; i++)
         {
@@ -88,6 +88,7 @@ class DynamicGridLayouts
         console.log('craftGRID')
 
         let offset = { x: 0, y: 0 }
+        
         this.layoutsParams = []
 
         for(let i = 0; i < this.$.layouts.length; i++)

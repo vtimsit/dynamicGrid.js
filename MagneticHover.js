@@ -30,10 +30,39 @@ class MagneticHover
             height: window.innerHeight,
         }
 
-        this.onWindowElements = []
-        this.topWindowElements = [] // elements to undisplay on scroll 
-        this.bottomWindowElements = [] // elements to display
+        this.offsetScrollTop = 
+        {
+            currentScrollY: 0,
+            currentScrollY_2: 0,
+        }
 
+        this.offsetScrollBottom = 
+        {
+            currentScrollY: 0,
+            currentScrollY_2: 0,
+        }
+
+        this.topWindowElements = 
+        {
+            layouts: [], // elements to undisplay on scroll 
+            params: 
+            {
+                y: 0,
+                height: 0,
+            }
+        }
+
+        this.bottomWindowElements = 
+        {
+            layouts: [], // elements to display
+            params: 
+            {
+                y: 0,
+                height: 0,
+            },
+        }
+
+        this.onWindowElements = []
         
         const params = 
         {
@@ -127,7 +156,11 @@ class MagneticHover
         }
         window.addEventListener('resize', () => { this._initParams() })
         window.addEventListener('mousemove', (event) => { this._initCursor(event) })
-        window.addEventListener('scroll', () => { this._isOnWindow() })
+        window.addEventListener('scroll', () => 
+        { 
+            this._isOnWindow() 
+            this._offsetScroll()
+        })
 
         this.$.return.addEventListener('click', () => { this._initParams() })
     }
@@ -157,7 +190,6 @@ class MagneticHover
 
         for(let i = 0; i < this.$.layouts.length; i++)
         {
-            console.log(this.$.layouts[i])
             if(i != _index) this.$.layouts[i].style.opacity = '.5'
         }
     }
@@ -201,17 +233,21 @@ class MagneticHover
 
     _isOnWindow()
     {
+        this._resetLayouts()
+
         this.onWindowElements = []
-        this.topWindowElements = [] // elements to undisplay on scroll 
-        this.bottomWindowElements = [] // elements to display
+        this.topWindowElements.layouts = [] // elements to undisplay on scroll 
+        this.bottomWindowElements.layouts = [] // elements to display
 
         for(let i = 0; i < this.$.layouts.length; i++)
         {
-            // Check top elements
+            // Check bottom elements
             if(this.layoutsParams[i].y <= window.innerHeight + window.scrollY 
                 && this.layoutsParams[i].y >= window.scrollY + window.innerHeight - this.layoutsParams[i].height)
             {
-                this.bottomWindowElements.push(this.$.layouts[i])
+                this.bottomWindowElements.layouts.push(this.$.layouts[i])
+                this.bottomWindowElements.params.y = this.layoutsParams[i].y
+                this.bottomWindowElements.params.height = this.layoutsParams[i].height
             }
             // Check on window elements
             else if(this.layoutsParams[i].y <= window.innerHeight + window.scrollY 
@@ -219,12 +255,63 @@ class MagneticHover
             {
                 this. onWindowElements.push(this.$.layouts[i])
             }
-            // Check bottom elements
+            // Check top elements
             else if(window.scrollY > this.layoutsParams[i].y 
                 && this.layoutsParams[i].y >= window.scrollY - this.layoutsParams[i].height)
             {
-                this.topWindowElements.push(this.$.layouts[i])
+                this.topWindowElements.layouts.push(this.$.layouts[i])
+                this.topWindowElements.params.y = this.layoutsParams[i].y
+                this.topWindowElements.params.height = this.layoutsParams[i].height
             }
         }
+    }
+
+    _resetLayouts()
+    {
+        for(let i = 0; i < this.topWindowElements.layouts.length; i++)
+        {
+            this.topWindowElements.layouts[i].style.transform = `translateY(0px)`
+            this.topWindowElements.layouts[i].style.opacity = `1`
+        }
+    }
+
+    _offsetScroll()
+    {
+        // Update layouts top scroll values
+        if(this.topWindowElements.layouts.length > 0) 
+        {
+            this.offsetScrollTop.currentScrollY = 1 - ((window.scrollY - this.topWindowElements.params.y) / (this.topWindowElements.params.height))
+            this.offsetScrollTop.currentScrollY_2 = ((window.scrollY - this.topWindowElements.params.y) / (this.topWindowElements.params.height / 100))
+        }
+        else
+        {
+            this.offsetScrollTop.currentScrollY = 1
+            this.offsetScrollTop.currentScrollY_2 = 0
+        }
+
+        // Update layouts bottom scroll values
+        if(this.bottomWindowElements.layouts.length > 0) 
+        {
+            this.offsetScrollBottom.currentScrollY = (window.innerHeight + window.scrollY - this.bottomWindowElements.params.y) / (this.bottomWindowElements.params.height / 100)
+            // console.log(this.bottomWindowElements.params.height)
+        }
+        else
+        {
+            this.offsetScrollBottom.currentScrollY = 1
+            // this.offsetScrollBottom.currentScrollY_2 = 0
+        }
+
+        for(let i = 0; i < this.topWindowElements.layouts.length; i++)
+        {
+            this.topWindowElements.layouts[i].style.transform = `translateY(${-this.offsetScrollTop.currentScrollY_2}px)`
+            // this.topWindowElements.layouts[i].style.opacity = `${this.offsetScrollTop.currentScrollY}`
+        }
+
+        // for(let i = 0; i < this.bottomWindowElements.layouts.length; i++)
+        // {
+        //     this.bottomWindowElements.layouts[i].style.transform = `translateY(${-this.offsetScrollBottom.currentScrollY}px`
+        // }
+        // console.log(this.offset.currentScrollY)
+        console.log(this.offsetScrollTop.currentScrollY)
     }
 }
