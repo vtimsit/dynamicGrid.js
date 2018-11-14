@@ -34,8 +34,7 @@ class DynamicGridLayouts
         this._initParams()
         this._initLayouts()
         this._craftGridLayouts()
-        this._listeners()
-        
+        this._listeners()     
     }
 
     _initParams()
@@ -90,18 +89,33 @@ class DynamicGridLayouts
         let offset = { x: 0, y: 0 }
         
         this.layoutsParams = []
+        this.$.grid.innerHTML = ''
 
         for(let i = 0; i < this.$.layouts.length; i++)
         {
+            if(i % this.params.columnsNumber == 0) 
+            {
+                const line = document.createElement('div')
+
+                line.classList.add('line')
+
+                this.$.grid.appendChild(line)
+
+                for(let j = i; j < i + this.params.columnsNumber; j++)
+                {
+                    if(this.$.layouts[j]) line.appendChild(this.$.layouts[j])
+                }
+            }
+
             this.$.layouts[i].style.opacity = `1`
             this.$.layouts[i].style.transform = `translateX(${offset.x}px) translateY(${offset.y}px) scale(1)`
             this.layoutsParams.push(
-                { 
-                    x: offset.x + this.$.grid.offsetLeft, 
-                    y: offset.y + this.$.grid.offsetTop,
-                    width: this.params.layoutsWidth,
-                    height: this.params.layoutsHeight,
-                })
+            { 
+                x: offset.x + this.$.grid.offsetLeft, 
+                y: offset.y + this.$.grid.offsetTop,
+                width: this.params.layoutsWidth,
+                height: this.params.layoutsHeight,
+            })
 
             // Calc offset X & Y
             offset = this._setOffset(offset)
