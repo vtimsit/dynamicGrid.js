@@ -5,6 +5,7 @@ class MagneticHover
         this.$ = 
         {
             layouts: document.querySelectorAll(_layoutsSelector),
+            lines: [],
             brights: document.querySelectorAll('.layout__bright'),
             shadows: document.querySelectorAll('.layout__shadow'),
             cursor: document.querySelector('.cursor'),
@@ -91,7 +92,11 @@ class MagneticHover
             height: window.innerHeight,
         }
 
-        this.layoutsParams = this.dynamicGrid.getParams()
+        this.layoutsParams = this.dynamicGrid.getLayoutsParams()
+        this.linesParams = this.dynamicGrid.getLinesParams()
+        this.$.lines = this.dynamicGrid.getLines()
+
+        console.log(this.$.lines)
     }
 
     _initStyle()
@@ -239,31 +244,56 @@ class MagneticHover
         this.topWindowElements.layouts = [] // elements to undisplay on scroll 
         this.bottomWindowElements.layouts = [] // elements to display
 
-        for(let i = 0; i < this.$.layouts.length; i++)
+        for(let i = 0; i < this.$.lines.length; i++)
         {
-            // Check bottom elements
-            if(this.layoutsParams[i].y <= window.innerHeight + window.scrollY 
-                && this.layoutsParams[i].y >= window.scrollY + window.innerHeight - this.layoutsParams[i].height)
+            // // Check bottom elements
+            // if(this.layoutsParams[i].y <= window.innerHeight + window.scrollY 
+            //     && this.layoutsParams[i].y >= window.scrollY + window.innerHeight - this.layoutsParams[i].height)
+            // {
+            //     this.bottomWindowElements.layouts.push(this.$.layouts[i])
+            //     this.bottomWindowElements.params.y = this.layoutsParams[i].y
+            //     this.bottomWindowElements.params.height = this.layoutsParams[i].height
+            // }
+            // // Check on window elements
+            // else if(this.layoutsParams[i].y <= window.innerHeight + window.scrollY 
+            //     && this.layoutsParams[i].y >= window.scrollY )
+            // {
+            //     this. onWindowElements.push(this.$.layouts[i])
+            // }
+            // // Check top elements
+            if(window.scrollY > this.linesParams[i].y 
+                && this.linesParams[i].y >= window.scrollY - this.linesParams[i].height)
             {
-                this.bottomWindowElements.layouts.push(this.$.layouts[i])
-                this.bottomWindowElements.params.y = this.layoutsParams[i].y
-                this.bottomWindowElements.params.height = this.layoutsParams[i].height
-            }
-            // Check on window elements
-            else if(this.layoutsParams[i].y <= window.innerHeight + window.scrollY 
-                && this.layoutsParams[i].y >= window.scrollY )
-            {
-                this. onWindowElements.push(this.$.layouts[i])
-            }
-            // Check top elements
-            else if(window.scrollY > this.layoutsParams[i].y 
-                && this.layoutsParams[i].y >= window.scrollY - this.layoutsParams[i].height)
-            {
-                this.topWindowElements.layouts.push(this.$.layouts[i])
-                this.topWindowElements.params.y = this.layoutsParams[i].y
-                this.topWindowElements.params.height = this.layoutsParams[i].height
+                this.topWindowElements.layouts.push(this.$.lines[i])
+                this.topWindowElements.params.y = this.linesParams[i].y
+                this.topWindowElements.params.height = this.linesParams[i].height
             }
         }
+        // for(let i = 0; i < this.$.layouts.length; i++)
+        // {
+        //     // Check bottom elements
+        //     if(this.layoutsParams[i].y <= window.innerHeight + window.scrollY 
+        //         && this.layoutsParams[i].y >= window.scrollY + window.innerHeight - this.layoutsParams[i].height)
+        //     {
+        //         this.bottomWindowElements.layouts.push(this.$.layouts[i])
+        //         this.bottomWindowElements.params.y = this.layoutsParams[i].y
+        //         this.bottomWindowElements.params.height = this.layoutsParams[i].height
+        //     }
+        //     // Check on window elements
+        //     else if(this.layoutsParams[i].y <= window.innerHeight + window.scrollY 
+        //         && this.layoutsParams[i].y >= window.scrollY )
+        //     {
+        //         this. onWindowElements.push(this.$.layouts[i])
+        //     }
+        //     // Check top elements
+        //     else if(window.scrollY > this.layoutsParams[i].y 
+        //         && this.layoutsParams[i].y >= window.scrollY - this.layoutsParams[i].height)
+        //     {
+        //         this.topWindowElements.layouts.push(this.$.layouts[i])
+        //         this.topWindowElements.params.y = this.layoutsParams[i].y
+        //         this.topWindowElements.params.height = this.layoutsParams[i].height
+        //     }
+        // }
     }
 
     _resetLayouts()
@@ -281,7 +311,8 @@ class MagneticHover
         if(this.topWindowElements.layouts.length > 0) 
         {
             this.offsetScrollTop.currentScrollY = 1 - ((window.scrollY - this.topWindowElements.params.y) / (this.topWindowElements.params.height))
-            this.offsetScrollTop.currentScrollY_2 = ((window.scrollY - this.topWindowElements.params.y) / (this.topWindowElements.params.height / 100))
+            this.offsetScrollTop.currentScrollY_2 = ((window.scrollY - this.topWindowElements.params.y) / (this.topWindowElements.params.height / 500))
+            console.log(this.offsetScrollTop.currentScrollY)
         }
         else
         {
@@ -303,15 +334,13 @@ class MagneticHover
 
         for(let i = 0; i < this.topWindowElements.layouts.length; i++)
         {
-            this.topWindowElements.layouts[i].style.transform = `translateY(${-this.offsetScrollTop.currentScrollY_2}px)`
-            // this.topWindowElements.layouts[i].style.opacity = `${this.offsetScrollTop.currentScrollY}`
+            // this.topWindowElements.layouts[i].style.transform = `scale(${this.offsetScrollTop.currentScrollY})`
+            this.topWindowElements.layouts[i].style.transform = `translateY(${this.offsetScrollTop.currentScrollY_2}px) scale(${this.offsetScrollTop.currentScrollY})`
         }
 
         // for(let i = 0; i < this.bottomWindowElements.layouts.length; i++)
         // {
         //     this.bottomWindowElements.layouts[i].style.transform = `translateY(${-this.offsetScrollBottom.currentScrollY}px`
         // }
-        // console.log(this.offset.currentScrollY)
-        console.log(this.offsetScrollTop.currentScrollY)
     }
 }

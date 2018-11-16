@@ -10,6 +10,7 @@ class DynamicGridLayouts
             layouts: document.querySelectorAll('.layout'),
             categories: document.querySelectorAll('.categories li'),
             return: document.querySelector('.return'),
+            lines: [],
         }
         
         this.bool = 
@@ -30,6 +31,7 @@ class DynamicGridLayouts
         }
 
         this.layoutsParams = []
+        this.linesParams = []
 
         this._initParams()
         this._initLayouts()
@@ -89,6 +91,9 @@ class DynamicGridLayouts
         let offset = { x: 0, y: 0 }
         
         this.layoutsParams = []
+        this.linesParams = []
+        this.$.lines = []
+
         this.$.grid.innerHTML = ''
 
         for(let i = 0; i < this.$.layouts.length; i++)
@@ -99,6 +104,7 @@ class DynamicGridLayouts
 
                 line.classList.add('line')
 
+                this.$.lines.push(line)
                 this.$.grid.appendChild(line)
 
                 for(let j = i; j < i + this.params.columnsNumber; j++)
@@ -116,6 +122,16 @@ class DynamicGridLayouts
                 width: this.params.layoutsWidth,
                 height: this.params.layoutsHeight,
             })
+
+            if(i % this.params.columnsNumber == 0)
+            {
+                this.linesParams.push(
+                {
+                    y: offset.y + this.$.grid.offsetTop,
+                    height: this.params.layoutsHeight,
+                })
+            }
+
 
             // Calc offset X & Y
             offset = this._setOffset(offset)
@@ -266,9 +282,19 @@ class DynamicGridLayouts
         }
     }
 
-    getParams()
+    getLayoutsParams()
     {
         return this.layoutsParams
+    }
+
+    getLinesParams()
+    {
+        return this.linesParams
+    }
+
+    getLines()
+    {
+        return this.$.lines
     }
 }
 
