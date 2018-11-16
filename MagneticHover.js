@@ -11,6 +11,7 @@ class MagneticHover
             cursor: document.querySelector('.cursor'),
             return: document.querySelector('.return'),
             titles: document.querySelectorAll('.layout h3'),
+            grid: document.querySelector('.grid'),
         }
 
         this.bool =
@@ -95,8 +96,6 @@ class MagneticHover
         this.layoutsParams = this.dynamicGrid.getLayoutsParams()
         this.linesParams = this.dynamicGrid.getLinesParams()
         this.$.lines = this.dynamicGrid.getLines()
-
-        console.log(this.$.lines)
     }
 
     _initStyle()
@@ -261,8 +260,8 @@ class MagneticHover
             //     this. onWindowElements.push(this.$.layouts[i])
             // }
             // // Check top elements
-            if(window.scrollY > this.linesParams[i].y 
-                && this.linesParams[i].y >= window.scrollY - this.linesParams[i].height)
+            if(window.scrollY > this.linesParams[i].y + this.$.grid.offsetTop 
+                && this.linesParams[i].y >= (window.scrollY - this.$.grid.offsetTop) - this.linesParams[i].height)
             {
                 this.topWindowElements.layouts.push(this.$.lines[i])
                 this.topWindowElements.params.y = this.linesParams[i].y
@@ -300,7 +299,7 @@ class MagneticHover
     {
         for(let i = 0; i < this.topWindowElements.layouts.length; i++)
         {
-            this.topWindowElements.layouts[i].style.transform = `translateY(0px)`
+            this.topWindowElements.layouts[i].style.transform = `translateY(${this.topWindowElements.params.y}px)`
             this.topWindowElements.layouts[i].style.opacity = `1`
         }
     }
@@ -310,9 +309,8 @@ class MagneticHover
         // Update layouts top scroll values
         if(this.topWindowElements.layouts.length > 0) 
         {
-            this.offsetScrollTop.currentScrollY = 1 - ((window.scrollY - this.topWindowElements.params.y) / (this.topWindowElements.params.height))
-            this.offsetScrollTop.currentScrollY_2 = ((window.scrollY - this.topWindowElements.params.y) / (this.topWindowElements.params.height / 500))
-            console.log(this.offsetScrollTop.currentScrollY)
+            this.offsetScrollTop.currentScrollY = 1 - (((window.scrollY - this.$.grid.offsetTop) - this.topWindowElements.params.y) / (this.topWindowElements.params.height / .2))
+            this.offsetScrollTop.currentScrollY_2 = (((window.scrollY - this.$.grid.offsetTop) - this.topWindowElements.params.y) / (this.topWindowElements.params.height / 100))
         }
         else
         {
@@ -334,8 +332,9 @@ class MagneticHover
 
         for(let i = 0; i < this.topWindowElements.layouts.length; i++)
         {
+            console.log(this.topWindowElements.params.y)
             // this.topWindowElements.layouts[i].style.transform = `scale(${this.offsetScrollTop.currentScrollY})`
-            this.topWindowElements.layouts[i].style.transform = `translateY(${this.offsetScrollTop.currentScrollY_2}px) scale(${this.offsetScrollTop.currentScrollY})`
+            this.topWindowElements.layouts[i].style.transform = `translateY(${(this.topWindowElements.params.y - this.offsetScrollTop.currentScrollY_2)}px) scale(${this.offsetScrollTop.currentScrollY}) rotateX(${this.offsetScrollTop.currentScrollY_2 * .2}deg)`
         }
 
         // for(let i = 0; i < this.bottomWindowElements.layouts.length; i++)

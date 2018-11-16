@@ -163,3 +163,10 @@ body
     opacity: 0;
     transition: opacity .3s ease;
 }
+
+.line
+{
+    width: 100%;
+    height: 160px;
+    position: absolute;
+}

@@ -35,7 +35,7 @@ class DynamicGridLayouts
 
         this._initParams()
         this._initLayouts()
-        this._craftGridLayouts()
+        this._craftGridLayouts(true)
         this._listeners()     
     }
 
@@ -84,7 +84,7 @@ class DynamicGridLayouts
         this.$.return.addEventListener('click', () => { this._resetLayouts() })
     }
 
-    _craftGridLayouts()
+    _craftGridLayouts(_init = false)
     {
         console.log('craftGRID')
 
@@ -92,16 +92,21 @@ class DynamicGridLayouts
         
         this.layoutsParams = []
         this.linesParams = []
-        this.$.lines = []
-
-        this.$.grid.innerHTML = ''
-
+        
+        if(_init)
+        {
+            this.$.grid.innerHTML = ''
+            this.$.lines = []
+        } 
+        
         for(let i = 0; i < this.$.layouts.length; i++)
         {
-            if(i % this.params.columnsNumber == 0) 
+            if(i % this.params.columnsNumber == 0 && _init) 
             {
                 const line = document.createElement('div')
 
+                line.style.transform = `translateY(${offset.y}px)`
+                line.style.height = `${this.params.layoutsHeight}px`
                 line.classList.add('line')
 
                 this.$.lines.push(line)
@@ -109,16 +114,22 @@ class DynamicGridLayouts
 
                 for(let j = i; j < i + this.params.columnsNumber; j++)
                 {
-                    if(this.$.layouts[j]) line.appendChild(this.$.layouts[j])
+                    if(this.$.layouts[j]) 
+                    {
+                        line.appendChild(this.$.layouts[j])
+
+                        //Defined line index for every layout
+                        this.$.layouts[j].dataset.line = i / this.params.columnsNumber
+                    }
                 }
             }
 
             this.$.layouts[i].style.opacity = `1`
-            this.$.layouts[i].style.transform = `translateX(${offset.x}px) translateY(${offset.y}px) scale(1)`
+            this.$.layouts[i].style.transform = `translateX(${offset.x}px) scale(1)`
             this.layoutsParams.push(
             { 
                 x: offset.x + this.$.grid.offsetLeft, 
-                y: offset.y + this.$.grid.offsetTop,
+                y: offset.y /*+ this.$.grid.offsetTop*/,
                 width: this.params.layoutsWidth,
                 height: this.params.layoutsHeight,
             })
@@ -127,7 +138,7 @@ class DynamicGridLayouts
             {
                 this.linesParams.push(
                 {
-                    y: offset.y + this.$.grid.offsetTop,
+                    y: offset.y/* + this.$.grid.offsetTop*/,
                     height: this.params.layoutsHeight,
                 })
             }
@@ -187,7 +198,7 @@ class DynamicGridLayouts
         if(window.innerWidth < 600) { this.params.gapX = 10 } else { this.params.gapX = this.gap.x }
         if(window.innerWidth < 600) { this.params.gapY = 10 } else { this.params.gapY = this.gap.y }
 
-        this.bool.categoryOpen ? this._craftCategoryLayouts() : this._craftGridLayouts()
+        this.bool.categoryOpen ? this._craftCategoryLayouts() : this._craftGridLayouts(true)
     }
 
     _resetLayouts()
@@ -247,8 +258,10 @@ class DynamicGridLayouts
             
             for(let i = 0; i < this.categories.toDisplay.length; i++)
             {
+                const lineIndex = this.categories.toDisplay[i].dataset.line
+
                 this.categories.toDisplay[i].style.zIndex = `10`
-                this.categories.toDisplay[i].style.transform = `translateX(${offset.x}px) translateY(${offset.y}px) scale(${this.params.scaleRatio})`
+                this.categories.toDisplay[i].style.transform = `translateX(${offset.x}px) translateY(${offset.y - this.linesParams[lineIndex].y}px) scale(${this.params.scaleRatio})`
     
                 offset.y+= this.params.layoutsHeight + this.params.gapY
 
