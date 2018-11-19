@@ -78,6 +78,7 @@ class MagneticHover
         }
         
         this.dynamicGrid = new DynamicGridLayouts(params)
+        new ScrollBar()
         
         this._initParams()
         this._isOnWindow()
@@ -332,7 +333,7 @@ class MagneticHover
 
         for(let i = 0; i < this.topWindowElements.layouts.length; i++)
         {
-            console.log(this.topWindowElements.params.y)
+            // console.log(this.topWindowElements.params.y)
             // this.topWindowElements.layouts[i].style.transform = `scale(${this.offsetScrollTop.currentScrollY})`
             this.topWindowElements.layouts[i].style.transform = `translateY(${(this.topWindowElements.params.y - this.offsetScrollTop.currentScrollY_2)}px) scale(${this.offsetScrollTop.currentScrollY}) rotateX(${this.offsetScrollTop.currentScrollY_2 * .2}deg)`
         }
