@@ -93,7 +93,9 @@ class ScrollBar
         let scrollRatio = (window.scrollY * this.params.scrollEnding) / this.params.documentScrollEnding
         let tabScrollRatio = (window.scrollY * this.params.tabScrollEnding) / this.params.documentScrollEnding
 
-        const wordOffset = this.params.itemHeight * (this.params.visibleWords)
+        //wordOffset: distance which current word has to travel
+        const wordOffset = this.params.itemHeight * (this.params.visibleWords + 2)
+        //Init current scale variable
         let currentScale = 0
         
         this.$.tab.style.transform = `translateY(${Math.round(scrollRatio)}px)`
@@ -106,11 +108,9 @@ class ScrollBar
         }
         else if(2 - window.scrollY / (wordOffset / 2) >= 0)
         {
-            // console.log(2 - currentScale)
             currentScale = 2 - window.scrollY / (wordOffset / 2)
         }
 
-        
         this.$.items[5].style.transform = `scale(${1 + (1 * currentScale)})`
         this.$.items[5].style.opacity = `${currentScale}`
     }
