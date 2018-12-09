@@ -191,6 +191,7 @@ body
     position: fixed;
     right: 0;
     top: 0;
+    /* transform: scale(2) translateY(50px); */
 
     /* background: orange; */
 
@@ -208,9 +209,38 @@ body
     white-space: nowrap;
     transform-origin: left;
     font-weight: bold;
+    background-color: aquamarine;
+    /* outline: 1px solid royalblue; */
+    box-shadow: inset 0px 0px 0px 1px royalblue;
+    position: relative;
+}
+
+.scrollbar__list li .meteric
+{
+    width: 100%;
+    height: 1px;
+    position: absolute;
+
+    background-color: orange;
+    top: 50%;
+    transform: translateY(-50%)
 }
 
 .scrollbar__tab
 {
     overflow: hidden;
+    position: relative;
+}
+
+.scrollbar__tab .indicator
+{
+    width: 50px;
+    height: 1px;
+
+    background-color: red;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 10;
 }

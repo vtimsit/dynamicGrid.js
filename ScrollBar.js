@@ -16,7 +16,7 @@ class ScrollBar
         this.params = 
         {
             itemHeight: 0,
-            visibleWords: 5
+            visibleWords: 5,
         }
 
         const aboutText = this.$.about.innerText
@@ -64,15 +64,18 @@ class ScrollBar
         this.params.itemHeight = this.$.items[0].offsetHeight
         this.params.visibleItemsHeight = this.params.itemHeight * this.params.visibleWords
         this.params.scrollbarHeight = this.$.scrollbar.offsetHeight
-        this.params.scrollEnding = this.$.scrollbar.offsetHeight - this.params.visibleItemsHeight
+        this.params.listScrollEnding = this.$.scrollbar.offsetHeight - this.params.visibleItemsHeight
         this.params.documentScrollEnding = document.body.offsetHeight - window.innerHeight
         this.params.listHeight = this.$.list.offsetHeight
-        this.params.tabScrollEnding = this.params.listHeight - this.params.visibleItemsHeight
+        this.params.initialOffset = (this.params.visibleWords - (this.params.visibleWords % 2)) / 2 * this.params.itemHeight
+        this.params.tabScrollEnding = this.params.listHeight + this.params.initialOffset - this.params.visibleItemsHeight + this.params.initialOffset
+        this.params.itemLength = this.$.items.length
     }
     
     _initStyles()
     {
         this.$.tab.style.height = `${this.params.visibleItemsHeight}px`
+        this.$.list.style.transform = `translateY(${this.params.initialOffset}px)`
     }
 
     _craftScrollBarDOM()
@@ -80,26 +83,41 @@ class ScrollBar
         for(let i = 0; i < this.parseWords.length; i++)
         {
             const item = document.createElement('li')
+            const meteric = document.createElement('div')
 
             item.innerText = this.parseWords[i]
+            meteric.classList.add('meteric')
 
             this.$.list.appendChild(item)
             this.$.items.push(item)
+            item.appendChild(meteric)
         }
     }
 
     _handleScroll()
     {
-        let scrollRatio = (window.scrollY * this.params.scrollEnding) / this.params.documentScrollEnding
+        let scrollRatio = (window.scrollY * this.params.listScrollEnding) / this.params.documentScrollEnding
         let tabScrollRatio = (window.scrollY * this.params.tabScrollEnding) / this.params.documentScrollEnding
 
+        
+        // const scrollWordToAnotherWord = (this.params.listHeight - this.params.initialOffset) / (this.params.itemLength - this.params.visibleWords)
+        const scrollWordToAnotherWord = this.params.documentScrollEnding / (this.params.itemLength - 1)
+
         //wordOffset: distance which current word has to travel
-        const wordOffset = this.params.itemHeight * (this.params.visibleWords + 2)
-        //Init current scale variable
+        const wordOffset = scrollWordToAnotherWord * 6
+        // const wordOffset = 147
+        const wordHitboxOffset = 59
         let currentScale = 0
         
         this.$.tab.style.transform = `translateY(${Math.round(scrollRatio)}px)`
-        this.$.list.style.transform = `translateY(${Math.round(-tabScrollRatio)}px)`
+        this.$.list.style.transform = `translateY(${this.params.initialOffset + Math.round(-tabScrollRatio)}px)`
+
+        // console.log((this.params.listHeight + this.params.initialOffset) / (this.params.itemLength - 1.25))
+        console.log('list height: ' + this.params.listHeight)
+        console.log('item length: ' + this.params.itemLength)
+        console.log('sroll word to another: ' + scrollWordToAnotherWord)
+        // console.log((this.params.listHeight + this.params.initialOffset) / (this.params.itemLength - 2))
+        console.log(window.scrollY)
 
         if(window.scrollY / (wordOffset / 2) <= 1)
         {
@@ -111,7 +129,7 @@ class ScrollBar
             currentScale = 2 - window.scrollY / (wordOffset / 2)
         }
 
-        this.$.items[5].style.transform = `scale(${1 + (1 * currentScale)})`
-        this.$.items[5].style.opacity = `${currentScale}`
+        this.$.items[3].style.transform = `scale(${1 + (1 * currentScale)})`
+        this.$.items[3].style.opacity = `${currentScale}`
     }
 }
