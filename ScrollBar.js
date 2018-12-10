@@ -99,37 +99,42 @@ class ScrollBar
         let scrollRatio = (window.scrollY * this.params.listScrollEnding) / this.params.documentScrollEnding
         let tabScrollRatio = (window.scrollY * this.params.tabScrollEnding) / this.params.documentScrollEnding
 
-        
-        // const scrollWordToAnotherWord = (this.params.listHeight - this.params.initialOffset) / (this.params.itemLength - this.params.visibleWords)
         const scrollWordToAnotherWord = this.params.documentScrollEnding / (this.params.itemLength - 1)
 
+        let count = 0
+        // const wordOffset = scrollWordToAnotherWord * 6
+
         //wordOffset: distance which current word has to travel
-        const wordOffset = scrollWordToAnotherWord * 6
-        // const wordOffset = 147
+        for(let i = 0; i < this.params.itemLength; i++)
+        {
+            const wordOffset = scrollWordToAnotherWord * (count)
+            
+            let currentScale = 0
+
+            if(window.scrollY / (wordOffset / 2) <= 1)
+            {
+                // console.log(currentScale)
+                currentScale = window.scrollY / (wordOffset / 2)
+            }
+            else if(2 - window.scrollY / (wordOffset / 2) >= 0)
+            {
+                currentScale = 2 - window.scrollY / (wordOffset / 2)
+            }
+
+            this.$.items[i].style.transform = `scale(${1 + (1 * currentScale)})`
+            this.$.items[i].style.opacity = `${currentScale}`
+
+            count+=2
+        }
+
         const wordHitboxOffset = 59
-        let currentScale = 0
+
+        console.log(this.params.initialOffset + Math.round(-tabScrollRatio))
         
         this.$.tab.style.transform = `translateY(${Math.round(scrollRatio)}px)`
         this.$.list.style.transform = `translateY(${this.params.initialOffset + Math.round(-tabScrollRatio)}px)`
-
-        // console.log((this.params.listHeight + this.params.initialOffset) / (this.params.itemLength - 1.25))
-        console.log('list height: ' + this.params.listHeight)
-        console.log('item length: ' + this.params.itemLength)
-        console.log('sroll word to another: ' + scrollWordToAnotherWord)
-        // console.log((this.params.listHeight + this.params.initialOffset) / (this.params.itemLength - 2))
         console.log(window.scrollY)
 
-        if(window.scrollY / (wordOffset / 2) <= 1)
-        {
-            // console.log(currentScale)
-            currentScale = window.scrollY / (wordOffset / 2)
-        }
-        else if(2 - window.scrollY / (wordOffset / 2) >= 0)
-        {
-            currentScale = 2 - window.scrollY / (wordOffset / 2)
-        }
-
-        this.$.items[3].style.transform = `scale(${1 + (1 * currentScale)})`
-        this.$.items[3].style.opacity = `${currentScale}`
+        
     }
 }
