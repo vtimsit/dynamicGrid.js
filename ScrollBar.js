@@ -70,6 +70,9 @@ class ScrollBar
         this.params.initialOffset = (this.params.visibleWords - (this.params.visibleWords % 2)) / 2 * this.params.itemHeight
         this.params.tabScrollEnding = this.params.listHeight + this.params.initialOffset - this.params.visibleItemsHeight + this.params.initialOffset
         this.params.itemLength = this.$.items.length
+        this.params.wordScrollOffset = this.params.documentScrollEnding / (this.params.itemLength - 1)
+        this.params.wordsHalfIn = Math.floor(this.params.visibleWords / 2)
+        this.params.wordsHalfOut = Math.ceil(this.params.visibleWords / 2)
     }
     
     _initStyles()
@@ -96,45 +99,42 @@ class ScrollBar
 
     _handleScroll()
     {
+        //Scroll bar variables
         let scrollRatio = (window.scrollY * this.params.listScrollEnding) / this.params.documentScrollEnding
         let tabScrollRatio = (window.scrollY * this.params.tabScrollEnding) / this.params.documentScrollEnding
 
-        const scrollWordToAnotherWord = this.params.documentScrollEnding / (this.params.itemLength - 1)
+        //Words variables
+        let wordRatio = window.scrollY / (this.params.wordScrollOffset * this.params.wordsHalfIn)
+        let currentWordIndex = Math.floor(window.scrollY / this.params.wordScrollOffset)
 
-        let count = 0
-        // const wordOffset = scrollWordToAnotherWord * 6
-
-        //wordOffset: distance which current word has to travel
-        for(let i = 0; i < this.params.itemLength; i++)
+        if(wordRatio >= 1)
         {
-            const wordOffset = scrollWordToAnotherWord * (count)
-            
-            let currentScale = 0
-
-            if(window.scrollY / (wordOffset / 2) <= 1)
-            {
-                // console.log(currentScale)
-                currentScale = window.scrollY / (wordOffset / 2)
-            }
-            else if(2 - window.scrollY / (wordOffset / 2) >= 0)
-            {
-                currentScale = 2 - window.scrollY / (wordOffset / 2)
-            }
-
-            this.$.items[i].style.transform = `scale(${1 + (1 * currentScale)})`
-            this.$.items[i].style.opacity = `${currentScale}`
-
-            count+=2
+            wordRatio = (this.params.wordScrollOffset * this.params.wordsHalfIn) / window.scrollY
         }
 
-        const wordHitboxOffset = 59
+        if(window.scrollY >= currentWordIndex * this.params.wordScrollOffset)
+        {
+            //Calculer le current scroll de chaque mot
+        }
 
-        console.log(this.params.initialOffset + Math.round(-tabScrollRatio))
-        
+        // console.log
+        // (
+        //     '%c' + this.params.wordScrollOffset * this.params.wordsHalfIn, 
+        //     'color: white; font-size: 20px; font-weight: bold'
+        // )
+        // console.log
+        // (
+        //     '%c' + window.scrollY, 
+        //     'color: orange; font-size: 20px; font-weight: bold'
+        // )
+        // console.log
+        // (
+        //     '%c' + currentWordIndex * this.params.wordScrollOffset, 
+        //     'color: green; font-size: 20px; font-weight: bold'
+        // )
+                
         this.$.tab.style.transform = `translateY(${Math.round(scrollRatio)}px)`
         this.$.list.style.transform = `translateY(${this.params.initialOffset + Math.round(-tabScrollRatio)}px)`
-        console.log(window.scrollY)
-
         
     }
 }
