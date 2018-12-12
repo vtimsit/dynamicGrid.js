@@ -116,7 +116,7 @@ class ScrollBar
         {
             //Calculer le current scroll de chaque mot
         }
-
+        // test
         // console.log
         // (
         //     '%c' + this.params.wordScrollOffset * this.params.wordsHalfIn, 
@@ -132,7 +132,7 @@ class ScrollBar
         //     '%c' + currentWordIndex * this.params.wordScrollOffset, 
         //     'color: green; font-size: 20px; font-weight: bold'
         // )
-                
+
         this.$.tab.style.transform = `translateY(${Math.round(scrollRatio)}px)`
         this.$.list.style.transform = `translateY(${this.params.initialOffset + Math.round(-tabScrollRatio)}px)`
         
